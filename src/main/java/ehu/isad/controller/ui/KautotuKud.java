@@ -33,15 +33,34 @@ public class KautotuKud implements Initializable {
     }
 
     @FXML
-    public void onClick(ActionEvent actionEvent) {
+    public void onClickKautotu(ActionEvent actionEvent) {
         System.out.println(txtErabiltzaile.getText() + ":" + txtPasahitza.getText());
         System.out.println(comboZerbitzua.getValue());
 
-        if ("Flickr".equals(comboZerbitzua.getValue()) &&
-                "juanan".equals(txtErabiltzaile.getText()) &&
-                "pereira".equals(txtPasahitza.getText())) {
+        if (ZerbitzuKud.getInstance().lortuZerbitzuak().contains(comboZerbitzua.getValue())) {
+            if ("Flickr".equals(comboZerbitzua.getValue()) &&
+                    "juanan".equals(txtErabiltzaile.getText()) &&
+                    "pereira".equals(txtPasahitza.getText())) {
 
-            mainApp.mainErakutsi();
+                mainApp.mainErakutsi();
+            }
+        }
+        else if (!String.valueOf(comboZerbitzua.getValue()).isBlank() && comboZerbitzua.getValue() != null) {
+            comboZerbitzua.getItems().add(comboZerbitzua.getValue().toString());
+            ZerbitzuKud.getInstance().gehituZerbitzua(comboZerbitzua.getValue().toString());
+        }
+    }
+
+    @FXML
+    void onClickEzabatu(ActionEvent event) {
+        if (comboZerbitzua.getValue() != null) {
+            String izena = comboZerbitzua.getValue().toString();
+            if (ZerbitzuKud.getInstance().lortuZerbitzuak().contains(izena)) {
+                int pos = comboZerbitzua.getItems().indexOf(izena);
+                comboZerbitzua.getItems().remove(pos);
+                comboZerbitzua.getSelectionModel().clearSelection();
+                ZerbitzuKud.getInstance().ezabatuZerbitzua(izena);
+            }
         }
     }
 
@@ -51,7 +70,6 @@ public class KautotuKud implements Initializable {
         ObservableList<String> herrialdeak = FXCollections.observableArrayList(herrialdeakList);
 
         comboZerbitzua.setItems( herrialdeak );
-
     }
 
 }
